@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 style="color: #e94560;">게시판</h2>
+        <a th:href="@{/board/write}" class="btn">글쓰기</a>
+    </div>
+
+    <!-- 검색 -->
+    <form th:action="@{/board/search}" method="get" style="margin-bottom: 1rem;">
+        <input type="text" name="keyword" placeholder="검색어 입력" th:value="${keyword}"
+               style="padding: 0.5rem; border-radius: 4px; border: 1px solid #0f3460; background: #1a1a2e; color: #eee;">
+        <button type="submit" class="btn btn-secondary">검색</button>
+    </form>
+
+    <!-- 취약점 힌트 -->
+    <div class="card" style="margin-bottom: 1rem; background-color: #0f3460;">
+        <p style="color: #ffd700;">💡 힌트: XSS & IDOR 테스트</p>
+        <p style="color: #4da6ff;">XSS: &lt;script&gt;alert('XSS')&lt;/script&gt;</p>
+        <p style="color: #4da6ff;">IDOR: 다른 사용자의 글 삭제 시도</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 60px;">번호</th>
+                <th>제목</th>
+                <th style="width: 120px;">작성자</th>
+                <th style="width: 80px;">조회수</th>
+                <th style="width: 150px;">작성일</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="board : ${boards}">
+                <td th:text="${board.id}"></td>
+                <td><a th:href="@{/board/{id}(id=${board.id})}" th:text="${board.title}"></a></td>
+                <td th:text="${board.author?.username ?: '익명'}"></td>
+                <td th:text="${board.viewCount}"></td>
+                <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(boards)}">
+                <td colspan="5" style="text-align: center;">게시글이 없습니다.</td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

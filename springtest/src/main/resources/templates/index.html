@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <div class="hero">
+        <h1>🔓 Vulsite</h1>
+        <p>취약점 학습 및 보안 진단 실습을 위한 웹 애플리케이션</p>
+    </div>
+
+    <div class="warning-box">
+        <h2>⚠️ 경고</h2>
+        <p>이 프로젝트는 <strong>교육 목적</strong>으로만 사용해야 합니다.</p>
+        <p>실제 운영 환경에 배포하지 마세요.</p>
+    </div>
+
+    <div class="vuln-list">
+        <h2>구현된 취약점</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>취약점</th>
+                    <th>설명</th>
+                    <th>테스트</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>SQL Injection</td>
+                    <td>로그인 시 SQL 쿼리 조작</td>
+                    <td><a th:href="@{/user/login}">로그인 페이지</a></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Stored XSS</td>
+                    <td>게시글에 스크립트 삽입</td>
+                    <td><a th:href="@{/board}">게시판</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>File Upload</td>
+                    <td>악성 파일 업로드</td>
+                    <td><a th:href="@{/file/upload}">파일 업로드</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Path Traversal</td>
+                    <td>경로 조작으로 파일 다운로드</td>
+                    <td><a th:href="@{/file}">파일 목록</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>버전 정보 노출</td>
+                    <td>에러 페이지에서 정보 노출</td>
+                    <td><a href="/error-test">에러 페이지</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>H2 Console 노출</td>
+                    <td>DB 콘솔 직접 접근</td>
+                    <td><a th:href="@{/h2-console}">H2 Console</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>평문 계정 정보</td>
+                    <td>설정 파일에 비밀번호 노출</td>
+                    <td><a th:href="@{/admin/config}">설정 페이지</a></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>관리자 페이지 접근</td>
+                    <td>인증 없이 관리자 페이지</td>
+                    <td><a th:href="@{/admin/dashboard}">관리자 대시보드</a></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>IDOR (정보수정)</td>
+                    <td>타사용자 정보 수정</td>
+                    <td><a th:href="@{/user/profile/1}">프로필 수정</a></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>IDOR (글삭제)</td>
+                    <td>타사용자 글 삭제</td>
+                    <td><a th:href="@{/board}">게시판</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

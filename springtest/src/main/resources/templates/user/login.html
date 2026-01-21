@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <div class="form-container">
+        <h2 style="text-align: center; color: #e94560; margin-bottom: 2rem;">로그인</h2>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <!-- 취약점 #1: SQL Injection 힌트 -->
+        <div class="card" style="margin-bottom: 1rem; background-color: #0f3460;">
+            <p style="color: #ffd700;">💡 힌트: SQL Injection 테스트</p>
+            <code style="color: #4da6ff;">' OR '1'='1' --</code>
+        </div>
+
+        <form th:action="@{/user/login}" method="post">
+            <div class="form-group">
+                <label for="username">사용자명</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">로그인</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 1rem;">
+            계정이 없으신가요? <a th:href="@{/user/register}" style="color: #4da6ff;">회원가입</a>
+        </p>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

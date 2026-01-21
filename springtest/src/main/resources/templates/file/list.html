@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 style="color: #e94560;">파일 목록</h2>
+        <a th:href="@{/file/upload}" class="btn">파일 업로드</a>
+    </div>
+
+    <!-- 취약점 힌트 -->
+    <div class="card" style="margin-bottom: 1rem; background-color: #0f3460;">
+        <p style="color: #ffd700;">💡 힌트: Path Traversal 테스트</p>
+        <code style="color: #4da6ff;">/file/download?filename=../../../etc/passwd</code>
+        <br>
+        <code style="color: #4da6ff;">/file/download?filename=..\..\..\..\windows\system32\config\sam</code>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 60px;">번호</th>
+                <th>파일명</th>
+                <th style="width: 100px;">크기</th>
+                <th style="width: 120px;">업로더</th>
+                <th style="width: 150px;">업로드일</th>
+                <th style="width: 100px;">다운로드</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="file : ${files}">
+                <td th:text="${file.id}"></td>
+                <td th:text="${file.originalName}"></td>
+                <td th:text="${file.fileSize} + ' bytes'"></td>
+                <td th:text="${file.uploader?.username ?: '익명'}"></td>
+                <td th:text="${#temporals.format(file.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td>
+                    <a th:href="@{/file/download(filename=${file.storedName})}" class="btn btn-secondary" style="padding: 0.3rem 0.8rem;">다운로드</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(files)}">
+                <td colspan="6" style="text-align: center;">업로드된 파일이 없습니다.</td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

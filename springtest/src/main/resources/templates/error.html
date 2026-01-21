@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <div class="card" style="text-align: center;">
+        <h1 style="color: #e94560; font-size: 4rem;" th:text="${status}">500</h1>
+        <h2 th:text="${error}">Internal Server Error</h2>
+        <p th:text="${message}">에러가 발생했습니다.</p>
+    </div>
+
+    <!-- 취약점 #5: 버전 정보 및 스택트레이스 노출 -->
+    <div class="card" style="margin-top: 2rem; background-color: #dc3545;">
+        <h3 style="color: white;">⚠️ 취약점: 에러 정보 노출</h3>
+        <p style="color: white;">아래에 서버 정보와 스택트레이스가 노출됩니다.</p>
+    </div>
+
+    <div class="card" style="margin-top: 1rem; background-color: #0f3460;">
+        <h4 style="color: #ffd700;">Exception</h4>
+        <pre style="color: #4da6ff; overflow-x: auto;" th:text="${exception}"></pre>
+    </div>
+
+    <div class="card" style="margin-top: 1rem; background-color: #0f3460;" th:if="${trace}">
+        <h4 style="color: #ffd700;">Stack Trace</h4>
+        <pre style="color: #4da6ff; overflow-x: auto; font-size: 0.8rem;" th:text="${trace}"></pre>
+    </div>
+
+    <div style="margin-top: 2rem; text-align: center;">
+        <a th:href="@{/}" class="btn">홈으로</a>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

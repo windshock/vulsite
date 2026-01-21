@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <h2 style="color: #e94560; margin-bottom: 2rem;">사용자 관리</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>사용자명</th>
+                <th>이메일</th>
+                <th>이름</th>
+                <th>관리자</th>
+                <th>가입일</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.admin} ? 'O' : 'X'"></td>
+                <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 2rem;">
+        <a th:href="@{/admin/dashboard}" class="btn btn-secondary">대시보드로</a>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

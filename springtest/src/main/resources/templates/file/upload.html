@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <div class="form-container">
+        <h2 style="text-align: center; color: #e94560; margin-bottom: 2rem;">파일 업로드</h2>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <!-- 취약점 #3: File Upload 힌트 -->
+        <div class="card" style="margin-bottom: 1rem; background-color: #0f3460;">
+            <p style="color: #ffd700;">💡 힌트: 악성 파일 업로드 테스트</p>
+            <p style="color: #4da6ff;">- 확장자 검증 없음: .jsp, .php 등 업로드 가능</p>
+            <p style="color: #4da6ff;">- MIME 타입 검증 없음</p>
+            <p style="color: #4da6ff;">- 웹쉘 업로드 시도 가능</p>
+        </div>
+
+        <form th:action="@{/file/upload}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">파일 선택</label>
+                <input type="file" id="file" name="file" required
+                       style="padding: 0.75rem; border: 1px solid #0f3460; border-radius: 4px; background-color: #1a1a2e; color: #eee; width: 100%;">
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" class="btn">업로드</button>
+                <a th:href="@{/file}" class="btn btn-secondary">취소</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

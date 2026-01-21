@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 style="color: #e94560;" th:text="${board.title}">제목</h2>
+            <span style="color: #aaa;">조회수: <span th:text="${board.viewCount}"></span></span>
+        </div>
+
+        <div style="color: #aaa; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #0f3460;">
+            <span>작성자: <span th:text="${board.author?.username ?: '익명'}"></span></span>
+            <span style="margin-left: 1rem;">작성일: <span th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></span></span>
+        </div>
+
+        <!-- 취약점 #2: Stored XSS - th:utext로 이스케이프 없이 출력 -->
+        <div class="content" style="min-height: 200px; line-height: 1.8;" th:utext="${board.content}">
+            내용
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #0f3460;">
+            <a th:href="@{/board}" class="btn btn-secondary">목록</a>
+            <a th:href="@{/board/edit/{id}(id=${board.id})}" class="btn">수정</a>
+
+            <!-- 취약점 #10: IDOR - 작성자 확인 없이 삭제 가능 -->
+            <form th:action="@{/board/delete/{id}(id=${board.id})}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 취약점 힌트 -->
+    <div class="card" style="margin-top: 1rem; background-color: #0f3460;">
+        <p style="color: #ffd700;">💡 취약점 정보</p>
+        <p style="color: #4da6ff;">이 페이지는 XSS와 IDOR 취약점이 있습니다.</p>
+        <p style="color: #4da6ff;">- content가 th:utext로 렌더링되어 스크립트 실행 가능</p>
+        <p style="color: #4da6ff;">- 삭제 시 작성자 확인을 하지 않음</p>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

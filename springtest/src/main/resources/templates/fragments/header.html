@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulsite - 취약점 학습 사이트</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:fragment="nav">
+    <div class="nav-container">
+        <a href="/" class="logo">🔓 Vulsite</a>
+        <ul class="nav-links">
+            <li><a th:href="@{/}">홈</a></li>
+            <li><a th:href="@{/board}">게시판</a></li>
+            <li><a th:href="@{/file}">파일</a></li>
+            <li th:if="${session.user != null}"><a th:href="@{/user/profile/} + ${session.userId}">프로필</a></li>
+            <li th:if="${session.user == null}"><a th:href="@{/user/login}">로그인</a></li>
+            <li th:if="${session.user == null}"><a th:href="@{/user/register}">회원가입</a></li>
+            <li th:if="${session.user != null}"><a th:href="@{/user/logout}">로그아웃</a></li>
+            <li><a th:href="@{/admin/dashboard}" class="admin-link">관리자</a></li>
+        </ul>
+    </div>
+</nav>
+</body>
+</html>

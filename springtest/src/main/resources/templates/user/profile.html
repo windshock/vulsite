@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<nav th:replace="fragments/header :: nav"></nav>
+
+<main class="container">
+    <h2 style="color: #e94560; margin-bottom: 2rem;">사용자 프로필</h2>
+
+    <!-- 취약점 #9: IDOR 힌트 -->
+    <div class="card" style="margin-bottom: 1rem; background-color: #0f3460;">
+        <p style="color: #ffd700;">💡 힌트: IDOR 테스트 - userId를 변경해보세요</p>
+        <code style="color: #4da6ff;">POST /user/update?userId=다른사용자ID</code>
+    </div>
+
+    <div class="profile-info">
+        <h2 th:text="${profileUser.name}">사용자 이름</h2>
+        <div class="info-row">
+            <span class="info-label">ID:</span>
+            <span class="info-value" th:text="${profileUser.id}"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">사용자명:</span>
+            <span class="info-value" th:text="${profileUser.username}"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">이메일:</span>
+            <span class="info-value" th:text="${profileUser.email}"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">가입일:</span>
+            <span class="info-value" th:text="${profileUser.createdAt}"></span>
+        </div>
+    </div>
+
+    <!-- 정보 수정 폼 (취약: userId를 숨겨진 필드로 전송) -->
+    <div class="form-container" style="margin-top: 2rem;">
+        <h3 style="color: #e94560; margin-bottom: 1rem;">정보 수정</h3>
+        <form th:action="@{/user/update}" method="post">
+            <!-- 취약점 #9: 클라이언트에서 userId 조작 가능 -->
+            <input type="hidden" name="userId" th:value="${profileUser.id}">
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="email" id="email" name="email" th:value="${profileUser.email}">
+            </div>
+            <div class="form-group">
+                <label for="name">이름</label>
+                <input type="text" id="name" name="name" th:value="${profileUser.name}">
+            </div>
+            <button type="submit" class="btn">수정</button>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
