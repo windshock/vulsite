@@ -149,6 +149,8 @@ public String deletePost(@PathVariable Long id) {
 
 ## 실행 방법
 
+> **필수**: JDK 11 사용 (Lombok 호환성 문제 방지)
+
 ```bash
 # 1. 프로젝트 클론
 git clone https://github.com/windshock/vulsite.git
