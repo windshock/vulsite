@@ -27,7 +27,11 @@ dependencies {
     // 파일 업로드
     implementation 'commons-io:commons-io:2.11.0'
 
+    // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Playwright (브라우저 테스트 - Mac/Windows/Linux 지원)
+    testImplementation 'com.microsoft.playwright:playwright:1.40.0'
 }
 
 tasks.named('test') {
