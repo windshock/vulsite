@@ -24,7 +24,7 @@ public class BoardService {
     }
 
     public Optional<Board> findById(Long id) {
-        return boardRepository.findById(id);
+        eturn boardRepository.findById(id);
     }
 
     public Board getById(Long id) {
@@ -35,22 +35,42 @@ public class BoardService {
     }
 
     /**
-     * 취약점 #2: Stored XSS
-     * 사용자 입력 (title, content)을 이스케이프 없이 저장
+     * 취약점 #2: Stored XSS (2차 수정)
+     * 불완전한 필터링: script, img 태그 제거
+     * 우회 가능: svg, body, iframe 등 다른 태그
      */
     public Board create(String title, String content, User author) {
-        // TODO: A담당 - XSS 필터링 없이 저장 (취약)
-        Board board = new Board(title, content, author);
+        // 2차 수정: <script>, <img> 태그 필터링 (불완전)
+        String filteredTitle = filterXss(title);
+        String filteredContent = filterXss(content);
+
+        Board board = new Board(filteredTitle, filteredContent, author);
         return boardRepository.save(board);
     }
 
     public Board update(Long id, String title, String content) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
-        board.setTitle(title);
-        board.setContent(content);
+
+        // 2차 수정: <script>, <img> 태그 필터링 (불완전)
+        String filteredTitle = filterXss(title);
+        String filteredContent = filterXss(content);
+
+        board.setTitle(filteredTitle);
+        board.setContent(filteredContent);
         board.setUpdatedAt(LocalDateTime.now());
         return boardRepository.save(board);
+    }
+
+    /**
+     * 2차 XSS 필터 (불완전)
+     * script, img 태그만 제거 - svg, iframe 등 우회 가능
+     */
+    private String filterXss(String input) {
+        if (input == null) return null;
+        return input
+                .replaceAll("<script>", "").replaceAll("</script>", "")
+                .replaceAll("<img", "&lt;img");
     }
 
     /**

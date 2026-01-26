@@ -31,12 +31,23 @@ public class FileService {
     private String uploadDir;
 
     /**
-     * 취약점 #3: File Upload (확장자/MIME 검증 없음)
-     * 웹쉘 등 악성 파일 업로드 가능
+     * 취약점 #3: File Upload (2차 수정)
+     * 불완전한 필터링: JSP 관련 확장자 블랙리스트
+     * 우회 가능: 대소문자 (.JsP, .JSP)
      */
     public FileInfo upload(MultipartFile file, User uploader) throws IOException {
-        // TODO: B담당 - 확장자, MIME 타입 검증 없이 업로드 허용 (취약)
         String originalName = file.getOriginalFilename();
+
+        // 2차 수정: JSP 관련 확장자 블랙리스트 (불완전 - 대소문자 미처리)
+        if (originalName != null) {
+            String[] blockedExtensions = {".jsp", ".jspx", ".jspa", ".jspf"};
+            for (String ext : blockedExtensions) {
+                if (originalName.endsWith(ext)) {
+                    throw new IOException("JSP 관련 파일은 업로드할 수 없습니다.");
+                }
+            }
+        }
+
         String storedName = System.currentTimeMillis() + "_" + originalName;
         String filePath = uploadDir + "/" + storedName;
 
@@ -62,18 +73,33 @@ public class FileService {
     }
 
     /**
-     * 취약점 #4: Path Traversal (경로 검증 없음)
-     * ../../etc/passwd 등으로 임의 파일 접근 가능
+     * 취약점 #4: Path Traversal (2차 수정)
+     * 불완전한 필터링: ../ 재귀적 제거
+     * 우회 가능: URL 인코딩 (..%2f, %2e%2e/)
      */
     public Resource download(String filename) throws MalformedURLException {
-        // TODO: B담당 - 경로 조작 검증 없이 파일 접근 허용 (취약)
-        Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
+        // 2차 수정: ../ 재귀적 제거 (불완전 - URL 인코딩 미처리)
+        String sanitizedFilename = removePathTraversal(filename);
+
+        Path filePath = Paths.get(uploadDir).resolve(sanitizedFilename).normalize();
         Resource resource = new UrlResource(filePath.toUri());
 
         if (resource.exists()) {
             return resource;
         }
-        throw new RuntimeException("파일을 찾을 수 없습니다: " + filename);
+        throw new RuntimeException("파일을 찾을 수 없습니다: " + sanitizedFilename);
+    }
+
+    /**
+     * 2차 Path Traversal 필터 (불완전)
+     * ../ 재귀 제거 - URL 인코딩 우회 가능
+     */
+    private String removePathTraversal(String filename) {
+        String result = filename;
+        while (result.contains("../")) {
+            result = result.replace("../", "");
+        }
+        return result;
     }
 
     public List<FileInfo> findAll() {

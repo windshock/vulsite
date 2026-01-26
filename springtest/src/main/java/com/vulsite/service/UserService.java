@@ -23,16 +23,28 @@ public class UserService {
     private EntityManager entityManager;
 
     /**
-     * 취약점 #1: SQL Injection
-     * 사용자 입력값을 직접 쿼리에 삽입 (취약)
+     * 취약점 #1: SQL Injection (2차 수정)
+     * 불완전한 필터링: 싱글쿼트(')와 더블쿼트(") 제거
+     * 우회 가능: 백슬래시(\), SQL 키워드 (UNION, SELECT)
      */
     @SuppressWarnings("unchecked")
     public User loginVulnerable(String username, String password) {
-        // TODO: A담당 - SQL Injection 취약 코드 구현
-        // 예시: String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
-        String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+        // 2차 수정: 싱글쿼트, 더블쿼트 제거 (불완전)
+        String filteredUsername = filterSqlChars(username);
+        String filteredPassword = filterSqlChars(password);
+
+        String query = "SELECT * FROM users WHERE username = '" + filteredUsername + "' AND password = '" + filteredPassword + "'";
         List<User> users = entityManager.createNativeQuery(query, User.class).getResultList();
         return users.isEmpty() ? null : users.get(0);
+    }
+
+    /**
+     * 2차 SQL 필터 (불완전)
+     * 쿼트만 제거 - 백슬래시, SQL 키워드 우회 가능
+     */
+    private String filterSqlChars(String input) {
+        if (input == null) return null;
+        return input.replace("'", "").replace("\"", "");
     }
 
     public User register(String username, String password, String email, String name) {
