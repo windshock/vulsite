@@ -29,6 +29,9 @@ dependencies {
 
     // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+    testImplementation 'com.code-intelligence:jazzer-junit:0.24.0'
+    testImplementation 'org.jsoup:jsoup:1.17.2'
 
     // Playwright (브라우저 테스트 - Mac/Windows/Linux 지원)
     testImplementation 'com.microsoft.playwright:playwright:1.40.0'

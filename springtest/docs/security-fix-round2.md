@@ -70,6 +70,27 @@ private String filterXss(String input) {
 | `<body onpageshow=alert(1)>` | body 태그 이벤트 핸들러 |
 | `<marquee onstart=alert(1)>` | marquee 태그 이벤트 |
 
+### 퍼징 검증 (Jazzer + Jsoup)
+**목표**: `filterXss` 처리 후 HTML 태그(요소)가 남지 않는지 검증  
+**테스트 파일**: `src/test/java/com/vulsite/fuzz/XssFilterFuzzTest.java`  
+**검증 방식**:
+- `filterXss` 결과를 Jsoup로 파싱
+- `body`에 자식 요소가 남아 있으면 실패
+
+**실행 방법**:
+```bash
+# 단일 테스트 실행
+/tmp/gradle-8.5/gradle-8.5/bin/gradle test --tests "com.vulsite.fuzz.XssFilterFuzzTest"
+
+# 실제 fuzzing 모드
+JAZZER_FUZZ=1 /tmp/gradle-8.5/gradle-8.5/bin/gradle test --tests "com.vulsite.fuzz.XssFilterFuzzTest" --rerun-tasks
+```
+
+**실행 결과 요약**:
+- fuzzing 모드에서 HTML 요소가 남는 입력이 발견되어 테스트 실패
+- 실패 시 Jsoup 파싱 결과(tags/html)가 Assertion 메시지에 출력됨
+- Jazzer 크래시 입력은 프로젝트 루트에 `crash-<hash>` 파일로 저장됨
+
 ---
 
 ## 2. SQL Injection

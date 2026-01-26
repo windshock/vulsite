@@ -95,3 +95,17 @@ springtest/
 3. **우회 방법을 명시**할 것
 4. **기존 기능은 유지**할 것 (너무 깨뜨리지 않기)
 5. **아키텍처 변경 시 새 버전 문서 생성**할 것
+
+---
+
+## 퍼징 검증 실행 (로컬)
+
+```bash
+# 단일 테스트 실행
+/tmp/gradle-8.5/gradle-8.5/bin/gradle test --tests "com.vulsite.fuzz.XssFilterFuzzTest"
+
+# 실제 fuzzing 모드
+JAZZER_FUZZ=1 /tmp/gradle-8.5/gradle-8.5/bin/gradle test --tests "com.vulsite.fuzz.XssFilterFuzzTest" --rerun-tasks
+```
+
+관련 문서: `springtest/docs/security-fuzzing.md`
